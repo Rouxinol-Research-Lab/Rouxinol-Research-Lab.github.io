@@ -13,7 +13,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="/css/simple-sidebar.css" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
     body {
@@ -51,14 +51,29 @@
                     <li>
                         <a href="#">About</a>
                     </li>
+                    
                     <li>
-                        <a href="#">Contact</a>
-                    </li>
-                    <li>
-                        <a href="#">Scientific</a>
+                        
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="/test.html">Scientific <b class="caret"></b></a>
+                        
+                        <ul role="menu" class="dropdown-menu">
+
+                        <li><a href="/test.html">Test</a></li>
+
+                        <li><a href="/RBS.html">RBS</a></li>
+
+                        <li><a href="/#">Conferences</a></li>
+
+                        <li><a href="/#">Education</a></li>
+                    <li class="divider"></li>
+                        <li><a href="/#">CV -pdf</a></li>
+                    
+                        </ul>
                     </li>    
+                      
                     <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="/">Curriculum vitae <b class="caret"></b></a>
+                      
                         <ul role="menu" class="dropdown-menu">
 
                         <li><a href="/Papers.html">Articles</a></li>
@@ -68,10 +83,17 @@
                         <li><a href="/Conferences.html">Conferences</a></li>
 
                         <li><a href="/Education.html">Education</a></li>
+
+
                     <li class="divider"></li>
+                        <li><a href="/files/CV/Rouxinol CV.pdf">CV -pdf</a></li>
                     
+                        </ul>
+                    </li>
 
-
+                    <li>
+                        <a href="/contact.html">Contact</a>
+                    </li>
 
                     
                 </ul>
@@ -101,7 +123,9 @@
 <div class="bs-example">
 	<h2>PhD </h2>
     <ul class="list-unstyled">
-        <li>Magnetic Properties of Gd-Cr Thin Films Alloys
+        <li>
+            <a href="/files/Thesis/Rouxinol, F., Magnetic Properties of Gd-Cr Thin Films Alloys.pdf">
+            Magnetic Properties of Gd-Cr Thin Films Alloys - (in Portuguese)</a>
             <ul>
                 <li>University of Campinas</li>
                 <li>Institute of Physics "Gleb Wataghin" </li>
@@ -117,7 +141,9 @@
     <h2>Masters</h2>
     <ol class="list-unstyled">
         
-        <li>Study of the Deposition Process and Properties of Tungsten Oxide Films Obtained by a New Deposition Technique
+        <li>
+            <a href="/files/Thesis/Rouxinol, F., Study of the Deposition Process and Properties of Tungsten Oxide Films Obtained by a New Deposition Technique.pdf">
+            Study of the Deposition Process and Properties of Tungsten Oxide Films Obtained by a New Deposition Technique - (in Portuguese)</a>
             <ul>
                 <li>University of Campinas </li>
                 <li>Institute of Physics "Gleb Wataghin" </li>
@@ -160,6 +186,7 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
 
 </body>
 
