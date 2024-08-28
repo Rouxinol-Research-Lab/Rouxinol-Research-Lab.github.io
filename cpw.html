@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <title>CPW Resonator Calculator</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans&subset=latin-ext" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans';
+        }
+
+
+        td,
+        th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #f2f2f2;
+            color: black;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 1rem;
+            width: 100%;
+            max-width: 850px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+        }
+    </style>
+
+    <script>
+        function calculateCPW () {
+            const w = parseFloat(document.getElementById('w').value);
+            const s = parseFloat(document.getElementById('s').value);
+            const t = parseFloat(document.getElementById('t').value);
+            const h = parseFloat(document.getElementById('h').value);
+            const l = parseFloat(document.getElementById('l').value);
+            const e = parseFloat(document.getElementById('e').value);
+            const rho = parseFloat(document.getElementById('rho').value);
+            const tc = parseFloat(document.getElementById('tc').value);
+            const ck = parseFloat(document.getElementById('ck').value);
+            const Tg = parseFloat(document.getElementById('Tg').value);
+
+            function ellipk (k) {
+                // In real application, use special function from scipy library
+                return Math.PI / 2 * (1 + k * k / 4);
+            }
+
+            const k0 = w / (w + 2 * s);
+            const k0l = Math.sqrt(1 - k0 ** 2);
+            const k1 = (Math.sinh(Math.PI * w / (4 * h))) / (Math.sinh(Math.PI * (2 * s + w) / (4 * h)));
+            const k1l = Math.sqrt(1 - k1 ** 2);
+
+            const K0 = ellipk(k0);
+            const K0l = ellipk(k0l);
+            const K1 = ellipk(k1);
+            const K1l = ellipk(k1l);
+
+            const eeff = 1 + (e - 1) * (K1 * K0l) / (2 * K1l * K0);
+
+            const a = 1 / (2 * k0 ** 2 * K0 ** 2);
+            const b = -Math.log(t / (4 * w));
+            const c = -k0 * Math.log(t / (4 * (w + 2 * s)));
+            const d = (2 * (w + s) / (w + 2 * s)) * Math.log(s / (w + s));
+            const g = a * (b + c + d);
+
+            const l0 = 1.05e-3 * Math.sqrt(rho / tc);
+            const Lk = Math.PI * 4e-7 * g * (l0 ** 2) / (w * t);
+
+            const Ll = Math.PI * 4e-7 * K0l / (K0 * 4) + Lk;
+            const Cl = 4 * 8.854187817e-12 * eeff * K0 / K0l;
+            const f0 = 3e8 / (Math.sqrt(eeff) * 2 * l);
+            const z0 = Math.sqrt(Ll / Cl);
+
+            const lambda0 = 2 * Math.PI * f0 * Math.sqrt(eeff) / 3e8;
+            const alfa = (e / Math.sqrt(eeff)) * ((eeff - 1) / (e - 1)) * Math.PI * Tg * lambda0 / 2;
+
+            const L = 2 * Ll * l / (Math.PI ** 2);
+            const C = Cl * l / 2;
+            const R = z0 / (alfa * l);
+            const F0 = 1 / (2 * Math.PI * Math.sqrt(L * C));
+            const wn = 2 * Math.PI * F0;
+            const Qi = 2 * Math.PI * F0 * R * C;
+
+            const Rstar = (1 + (wn ** 2) * (ck ** 2) * 50) / ((wn ** 2) * (ck ** 2) * 50);
+            const Cstar = ck / (1 + (wn ** 2) * (ck ** 2) * 50);
+            const Wstar = 1 / Math.sqrt(L * (C + 2 * ck));
+            const fstar = Wstar / (2 * Math.PI);
+
+            const Qext = wn * Rstar * C / 2;
+            const Qload = wn * (C + 2 * Cstar) / (1 / R + 2 / Rstar);
+
+            const results = {
+                eeff, l0, Lk, Ll, Cl, f0, alfa, z0, L, C, R, F0, Qi, Rstar, Cstar, fstar, Qext, Qload
+            };
+
+            for (const [key, value] of Object.entries(results)) {
+                document.getElementById(key).innerText = value.toPrecision(5);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <main style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h2>CPW2 Resonator Calculator</h2>
+	 <div style="margin-top: 0rem;">                                  
+                     <img src="cpw.png" alt="imagem de um capacitor CPW>"            
+                         style="object-fit: contain; max-width: 800px; width:     100%;" title="Dimensões de um capacitor CPW"> 
+                 </div>   
+        <div class="container">
+            <div style="flex: 1;">
+                <h3 style="text-align: center;">Input Parameters</h3>
+
+                <table style="width: 100%;">
+                    <tr>
+                        <td>Width (w):</td>
+                        <td style="text-wrap: nowrap;"><input name="w" id="w" size="8" type="text" value="1e-6"> m</td>
+                    </tr>
+                    <tr>
+                        <td>Spacing (s):</td>
+                        <td style="text-wrap: nowrap;"><input name="s" id="s" size="8" type="text" value="2e-6"> m</td>
+                    </tr>
+                    <tr>
+                        <td>Thickness (t):</td>
+                        <td style="text-wrap: nowrap;"><input name="t" id="t" size="8" type="text" value="1e-6"> m</td>
+                    </tr>
+                    <tr>
+                        <td>Height (h):</td>
+                        <td style="text-wrap: nowrap;"><input name="h" id="h" size="8" type="text" value="500e-9"> m
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Length (l):</td>
+                        <td style="text-wrap: nowrap;"><input name="l" id="l" size="8" type="text" value="10e-3"> m</td>
+                    </tr>
+                    <tr>
+                        <td>Dielectric constant (ε):</td>
+                        <td style="text-wrap: nowrap;"><input name="e" id="e" size="8" type="text" value="11.6"></td>
+                    </tr>
+                    <tr>
+                        <td>Resistivity (ρ):</td>
+                        <td style="text-wrap: nowrap;"><input name="rho" id="rho" size="8" type="text" value="1e-8"> Ω·m
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Critical temperature (Tc):</td>
+                        <td style="text-wrap: nowrap;"><input name="tc" id="tc" size="8" type="text" value="1.2"> K</td>
+                    </tr>
+                    <tr>
+                        <td>Coupling capacitance (Ck):</td>
+                        <td style="text-wrap: nowrap;"><input name="ck" id="ck" size="8" type="text" value="1e-15"> F
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tangent loss (Tg):</td>
+                        <td style="text-wrap: nowrap;"><input name="Tg" id="Tg" size="8" type="text" value="5e-8"></td>
+                    </tr>
+                </table>
+                <button style="margin-top: 1rem;" type="button" onclick="calculateCPW()">Calculate</button>
+            </div>
+
+            <div style="flex: 1;">
+                <h3 style="text-align: center;">Results</h3>
+
+                <table>
+                    <tr>
+                        <td>Effective Dielectric Constant (εeff):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="eeff"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Inductance (l0):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="l0"></span> H</td>
+                    </tr>
+                    <tr>
+                        <td>Kinetic Inductance (Lk):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Lk"></span> H/m</td>
+                    </tr>
+                    <tr>
+                        <td>Inductance (Ll):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Ll"></span> H/m</td>
+                    </tr>
+                    <tr>
+                        <td>Capacitance (Cl):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Cl"></span> F/m</td>
+                    </tr>
+                    <tr>
+                        <td>Resonant Frequency (f0):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="f0"></span> GHz</td>
+                    </tr>
+                    <tr>
+                        <td>Dielectric Loss (α):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="alfa"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Characteristic Impedance (Z0):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="z0"></span> Ω</td>
+                    </tr>
+                    <tr>
+                        <td>Inductance (L):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="L"></span> H</td>
+                    </tr>
+                    <tr>
+                        <td>Capacitance (C):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="C"></span> F</td>
+                    </tr>
+                    <tr>
+                        <td>Resistance (R):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="R"></span> Ω</td>
+                    </tr>
+                    <tr>
+                        <td>Resonant Frequency with Loss (F0):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="F0"></span> GHz</td>
+                    </tr>
+                    <tr>
+                        <td>Internal Quality Factor (Qi):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Qi"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Effective Resistance (R*):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Rstar"></span> Ω</td>
+                    </tr>
+                    <tr>
+                        <td>Effective Capacitance (C*):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Cstar"></span> F</td>
+                    </tr>
+                    <tr>
+                        <td>Resonant Frequency (f*):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="fstar"></span> GHz</td>
+                    </tr>
+                    <tr>
+                        <td>External Quality Factor (Qext):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Qext"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Loaded Quality Factor (Qload):</td>
+                        <td style="text-align: end; text-wrap: nowrap;"><span id="Qload"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </main>
+
+
+</body>
+
+</html>
