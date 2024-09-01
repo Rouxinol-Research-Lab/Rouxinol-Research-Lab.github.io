@@ -9,26 +9,26 @@ layout: default
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans&subset=latin-ext" rel="stylesheet" type="text/css" />
     <style type="text/css">
-        * {
+        #cpw * {
             box-sizing: border-box;
         }
-
-        body {
+ 
+        #cpw body {
             font-family: 'Noto Sans';
         }
 
 
-        td,
-        th {
+        #cpw td,
+        #cpw th {
             border: 1px solid #ddd;
             padding: 8px;
         }
 
-        tr:nth-child(even) {
+        #cpw tr:nth-child(even) {
             background-color: #f2f2f2;
         }
 
-        th {
+        #cpw th {
             padding-top: 12px;
             padding-bottom: 12px;
             text-align: left;
@@ -36,7 +36,7 @@ layout: default
             color: white;
         }
 
-        button {
+        #cpw button {
             cursor: pointer;
             background-color: #f2f2f2;
             color: black;
@@ -47,15 +47,15 @@ layout: default
             width: 100%;
         }
 
-        button:hover {
+        #cpw button:hover {
             opacity: 0.8;
         }
 
-        button:active {
+        #cpw button:active {
             transform: scale(0.98);
         }
 
-        .container {
+        #cpw .container {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -65,7 +65,7 @@ layout: default
         }
 
         @media (max-width: 600px) {
-            .container {
+            #cpw .container {
                 flex-direction: column;
             }
 
@@ -145,7 +145,7 @@ layout: default
     </script>
 </head>
 
-<body>
+<div id= "cwp"> 
     <main style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h2>CPW2 Resonator Calculator</h2>
 	 <div style="margin-top: 0rem;">                                  
@@ -286,6 +286,6 @@ layout: default
     </main>
 
 
-</body>
+</div>
 
 </html>
